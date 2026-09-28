@@ -338,15 +338,6 @@ function ProductShowcase() {
                 <p className="text-sm font-medium text-slate-200 px-3">Codebook: Quantum Gates & Circuits</p>
               </div>
             </div>
-                className="group w-12 h-12 border border-slate-600/40 bg-slate-900/60 backdrop-blur-md hover:bg-slate-800/80 hover:border-slate-500/60 transition-all flex items-center justify-center pointer-events-auto"
-              >
-                {isPlaying ? (
-                  <div className="w-3 h-3 bg-slate-200" />
-                ) : (
-                  <Play size={16} className="text-slate-200 ml-0.5" />
-                )}
-              </button>
-            </div>
           </div>
         </motion.div>
       </div>
