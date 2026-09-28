@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Large video files — serve from CDN or YouTube embed instead
+*.mp4
+*.mov
+*.avi

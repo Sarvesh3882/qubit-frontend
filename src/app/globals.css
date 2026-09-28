@@ -1,26 +1,175 @@
 @import "tailwindcss";
 
+/* ─── Design Tokens ──────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surface */
+  --bg:        #ffffff;
+  --bg-subtle: #f7f7f8;
+  --bg-inset:  #f0f0f2;
+
+  /* Text */
+  --text-primary:   #111118;
+  --text-secondary: #52525b;
+  --text-tertiary:  #a1a1aa;
+  --text-disabled:  #d4d4d8;
+
+  /* Border */
+  --border:        #e4e4e7;
+  --border-strong: #d4d4d8;
+
+  /* Brand — a single deliberate indigo */
+  --brand:          #4f46e5;
+  --brand-hover:    #4338ca;
+  --brand-subtle:   #eef2ff;
+  --brand-text:     #4338ca;
+
+  /* Semantic */
+  --success:       #16a34a;
+  --success-bg:    #f0fdf4;
+  --warning:       #d97706;
+  --warning-bg:    #fffbeb;
+  --error:         #dc2626;
+  --error-bg:      #fef2f2;
+
+  /* Section accents — used only in their specific contexts */
+  --composer-bg:   #0d1117;
+  --composer-border: #21262d;
+  --composer-text:   #e6edf3;
+  --composer-muted:  #7d8590;
+
+  /* Spacing scale (used in CSS, not Tailwind — avoids duplication) */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
 }
 
+/* ─── Tailwind Theme ─────────────────────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-orbitron: var(--font-orbitron);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
 }
+
+/* ─── Scrollbars ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* ─── Typography utilities ───────────────────────────────────────────────── */
+.type-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8125rem;
+  font-feature-settings: "calt" 1, "liga" 1;
+}
+
+.font-orbitron {
+  font-family: var(--font-orbitron), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+/* ─── KaTeX ──────────────────────────────────────────────────────────────── */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.75rem 0;
+  margin: 0.5rem 0;
+}
+
+/* ─── Lesson prose ───────────────────────────────────────────────────────── */
+.lesson-prose p {
+  line-height: 1.75;
+  margin-bottom: 0.875rem;
+  color: var(--text-primary);
+}
+.lesson-prose strong { font-weight: 600; }
+.lesson-prose em { font-style: italic; color: var(--text-secondary); }
+.lesson-prose code {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8125rem;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
+  color: var(--brand-text);
+}
+.lesson-prose pre {
+  background: #111118;
+  border-radius: var(--radius-lg);
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+.lesson-prose pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #e4e4e7;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+.lesson-prose h3 {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  margin: 1.25rem 0 0.5rem;
+  color: var(--text-primary);
+}
+
+/* ─── Composer workspace ─────────────────────────────────────────────────── */
+.composer-workspace {
+  background: var(--composer-bg);
+  color: var(--composer-text);
+}
+
+/* ─── Subtle grid background ─────────────────────────────────────────────── */
+.grid-bg {
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ─── Radial gradient for image blending ────────────────────────────────── */
+.bg-gradient-radial {
+  background: radial-gradient(circle, transparent 0%, transparent 60%, currentColor 100%);
+}
+
+/* ─── Focus ring ─────────────────────────────────────────────────────────── */
+.focus-ring {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* ─── Transitions ────────────────────────────────────────────────────────── */
+.transition-fast { transition: all 100ms ease; }
+.transition-base { transition: all 150ms ease; }
+.delay-700 { animation-delay: 700ms; }
+
+/* ─── ReactFlow overrides ────────────────────────────────────────────────── */
+.react-flow__node { cursor: pointer; }
+.react-flow__attribution { display: none; }
+
+/* ─── Section-level background classes ──────────────────────────────────── */
+.section-white  { background: var(--bg); }
+.section-subtle { background: var(--bg-subtle); }

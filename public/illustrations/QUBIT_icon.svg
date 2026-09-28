@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Qubit quantum icon">
+  <defs>
+    <linearGradient id="disc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7fbf8"/>
+      <stop offset="0.16" stop-color="#d9f3ef"/>
+      <stop offset="0.18" stop-color="#19b9d8"/>
+      <stop offset="1" stop-color="#087baf"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#dffaf5"/>
+      <stop offset=".45" stop-color="#66e5ee"/>
+      <stop offset="1" stop-color="#08a9d0"/>
+    </linearGradient>
+    <linearGradient id="core" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#7cf2f2"/>
+      <stop offset=".5" stop-color="#05b8df"/>
+      <stop offset="1" stop-color="#0479ae"/>
+    </linearGradient>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- floating quantum particles -->
+  <g fill="#079fc8">
+    <circle cx="210" cy="245" r="13"/><circle cx="795" cy="260" r="24"/>
+    <circle cx="730" cy="175" r="10"/><circle cx="860" cy="465" r="14"/>
+    <circle cx="175" cy="470" r="21"/><circle cx="245" cy="650" r="12"/>
+    <circle cx="690" cy="610" r="10"/>
+  </g>
+  <circle cx="330" cy="355" r="12" fill="#f3f6ee"/>
+
+  <!-- large Q-shaped ring -->
+  <path d="M365 325 A255 255 0 1 1 665 700"
+        fill="none" stroke="#f3f6ee" stroke-width="42"
+        stroke-linecap="round"/>
+  <path d="M365 325 A255 255 0 1 1 665 700"
+        fill="none" stroke="#bdebe8" stroke-width="8"
+        stroke-linecap="round" opacity=".8"/>
+  <!-- Q tail -->
+  <path d="M625 625 L760 760" fill="none" stroke="#f3f6ee" stroke-width="43" stroke-linecap="butt"/>
+  <path d="M625 625 L760 760" fill="none" stroke="#bdebe8" stroke-width="7" opacity=".8"/>
+
+  <!-- orbital ring -->
+  <ellipse cx="512" cy="505" rx="340" ry="82"
+           transform="rotate(-10 512 505)"
+           fill="none" stroke="#08c4ed" stroke-width="10" opacity=".95"/>
+  <ellipse cx="512" cy="505" rx="340" ry="82"
+           transform="rotate(-10 512 505)"
+           fill="none" stroke="#e6faf4" stroke-width="2" opacity=".55"/>
+
+  <!-- central quantum stack -->
+  <g>
+    <!-- top cap -->
+    <ellipse cx="512" cy="285" rx="175" ry="65" fill="#f5f7ef"/>
+    <ellipse cx="512" cy="302" rx="175" ry="70" fill="url(#disc)"/>
+    <ellipse cx="512" cy="302" rx="137" ry="47" fill="#079bc2" opacity=".55"/>
+
+    <!-- vertical core -->
+    <rect x="450" y="330" width="124" height="390" rx="52" fill="#073e5c" opacity=".45"/>
+    <rect x="488" y="325" width="48" height="410" rx="22" fill="url(#core)" filter="url(#glow)" opacity=".95"/>
+
+    <!-- upper support filaments -->
+    <g stroke="#baf9f4" stroke-width="7" stroke-linecap="round" opacity=".9">
+      <path d="M435 335V410"/><path d="M460 330V420"/><path d="M486 327V430"/>
+      <path d="M538 327V430"/><path d="M564 330V420"/><path d="M589 335V410"/>
+    </g>
+
+    <!-- stacked discs -->
+    <g fill="url(#disc)" stroke="#064d70" stroke-width="3">
+      <ellipse cx="512" cy="430" rx="105" ry="34"/>
+      <ellipse cx="512" cy="510" rx="95" ry="31"/>
+      <ellipse cx="512" cy="585" rx="88" ry="29"/>
+      <ellipse cx="512" cy="650" rx="78" ry="26"/>
+    </g>
+
+    <!-- inner dark undersides -->
+    <g fill="#087fa9" opacity=".72">
+      <ellipse cx="512" cy="442" rx="82" ry="17"/>
+      <ellipse cx="512" cy="521" rx="73" ry="15"/>
+      <ellipse cx="512" cy="596" rx="66" ry="14"/>
+      <ellipse cx="512" cy="661" rx="57" ry="12"/>
+    </g>
+
+    <!-- circuit traces -->
+    <g fill="none" stroke="#69e8ef" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M470 365V455H450V500"/>
+      <path d="M495 355V465H478V535"/>
+      <path d="M520 350V475H540V560"/>
+      <path d="M545 360V450H565V520"/>
+      <path d="M565 390V475H585V590"/>
+      <path d="M455 430V560H440V625"/>
+      <path d="M580 420V550H600V625"/>
+      <path d="M485 555V700H465V745"/>
+      <path d="M540 570V710H560V750"/>
+      <path d="M515 600V770"/>
+    </g>
+    <g fill="#d9fbf4">
+      <circle cx="450" cy="500" r="5"/><circle cx="478" cy="535" r="5"/>
+      <circle cx="540" cy="560" r="5"/><circle cx="585" cy="590" r="5"/>
+      <circle cx="465" cy="745" r="5"/><circle cx="560" cy="750" r="5"/>
+      <circle cx="515" cy="770" r="5"/>
+    </g>
+  </g>
+
+  <!-- subtle orbit nodes -->
+  <g fill="#0bc5e9" filter="url(#glow)">
+    <circle cx="202" cy="535" r="7"/><circle cx="823" cy="460" r="8"/>
+  </g>
+</svg>
