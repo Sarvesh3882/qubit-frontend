@@ -44,7 +44,9 @@ function Req({
   );
 }
 
-export default function ClaimCertPage() {
+import { Suspense } from "react";
+
+function ClaimCertPageInner() {
   const router = useRouter();
   const params = useSearchParams();
   const pathId = params.get("path") ?? "";
@@ -258,5 +260,17 @@ export default function ClaimCertPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ClaimCertPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#f7f7f8]">
+        <div className="text-[#71717a] text-sm">Loading...</div>
+      </div>
+    }>
+      <ClaimCertPageInner />
+    </Suspense>
   );
 }
