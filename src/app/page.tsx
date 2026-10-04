@@ -320,7 +320,7 @@ function ProductShowcase() {
           <div className="relative border border-slate-700/30 bg-slate-950/40 backdrop-blur-sm overflow-hidden shadow-2xl aspect-video">
             <iframe
               className="w-full h-full"
-              src="https://www.youtube.com/embed/Kr07RNJdxwU?autoplay=1&mute=1&loop=1&playlist=Kr07RNJdxwU&controls=0&showinfo=0&rel=0&modestbranding=1"
+              src="https://www.youtube.com/embed/SruS1qkbM0A?autoplay=1&mute=1&loop=1&playlist=SruS1qkbM0A&controls=0&showinfo=0&rel=0&modestbranding=1"
               title="QUBIT Interactive Quantum Learning"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
