@@ -1,15 +1,36 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
 
-export const apiClient = axios.create({ baseURL: BASE });
+// 60 s timeout — enough to survive a Render free-tier cold start (~50 s max)
+export const apiClient = axios.create({ baseURL: BASE, timeout: 60_000 });
 
 apiClient.interceptors.request.use((config) => {
   const token = Cookies.get("qubit_token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+// ── Cold-start retry interceptor ─────────────────────────────────────────────
+// Render free tier spins down after inactivity. The first request after sleep
+// may fail with a network error or 503 while the container boots (~10-50 s).
+// We retry once after a 5-second delay so the user doesn't have to refresh.
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const config = error.config as (typeof error.config & { _retried?: boolean }) | undefined;
+    // Only retry once, and only on network errors or 503 (service unavailable)
+    const isNetworkError = !error.response;
+    const is503 = error.response?.status === 503;
+    if ((isNetworkError || is503) && config && !config._retried) {
+      config._retried = true;
+      await new Promise((resolve) => setTimeout(resolve, 5_000));
+      return apiClient(config);
+    }
+    return Promise.reject(error);
+  }
+);
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
 export const authApi = {

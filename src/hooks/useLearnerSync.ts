@@ -37,9 +37,9 @@ export function useLearnerSync() {
 
   useEffect(() => {
     if (!user || synced.current) return;
-    synced.current = true;
 
     async function sync() {
+      // Mark as synced only after success to allow retry on cold-start failure
       try {
         // ── 0. Curriculum meta first — computeRecommendations depends on it ──
         await fetchMeta();
@@ -172,7 +172,11 @@ export function useLearnerSync() {
 
       } catch {
         // Sync failure is non-fatal — localStorage remains as fallback
+        // Do NOT set synced.current so the next navigation can retry
+        return;
       }
+      // Only mark synced after a successful run
+      synced.current = true;
     }
 
     sync();
