@@ -27,7 +27,7 @@ import { useCurriculumMetaStore } from "@/store/curriculumMetaStore";
 import { assessmentApi, adaptiveApi } from "@/lib/api";
 
 export function useLearnerSync() {
-  const { user } = useAuthStore();
+  const { user, token } = useAuthStore();
   const { result: localResult, completed: localCompleted, skipped: localSkipped } = useAssessmentStore();
   const { conceptMastery: localConceptMastery } = useAdaptiveStore();
   const { fetchProgress } = useProgressStore();
@@ -36,7 +36,9 @@ export function useLearnerSync() {
   const synced = useRef(false);
 
   useEffect(() => {
-    if (!user || synced.current) return;
+    // Only sync when both a user object AND a valid token exist.
+    // Avoids flooding the console with 401s when the session has expired.
+    if (!user || !token || synced.current) return;
 
     async function sync() {
       // Mark as synced only after success to allow retry on cold-start failure
@@ -180,5 +182,5 @@ export function useLearnerSync() {
     }
 
     sync();
-  }, [user?.id]);
+  }, [user?.id, token]);
 }
