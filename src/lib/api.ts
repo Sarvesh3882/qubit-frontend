@@ -7,7 +7,20 @@ const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
 export const apiClient = axios.create({ baseURL: BASE, timeout: 60_000 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = Cookies.get("qubit_token");
+  // Prefer cookie (set on login/register), fall back to Zustand-persisted token
+  // in localStorage in case the cookie expired but the store still has it.
+  let token = Cookies.get("qubit_token");
+  if (!token) {
+    try {
+      const stored = localStorage.getItem("qubit-auth");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        token = parsed?.state?.token ?? undefined;
+        // Re-hydrate the cookie so future requests don't need this fallback
+        if (token) Cookies.set("qubit_token", token, { expires: 7 });
+      }
+    } catch { /* ignore parse errors */ }
+  }
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
