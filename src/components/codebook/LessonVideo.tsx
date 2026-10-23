@@ -1,92 +1,155 @@
 "use client";
-import { useState } from "react";
-import { Play } from "lucide-react";
+import { useRef, useState } from "react";
+import { Play, Pause, Volume2, VolumeX, Maximize2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Props {
-  src: string;        // YouTube video ID, e.g. "R_Gk9k4-bv8"
+  src: string;        // path to local video, e.g. "/Codebookvedio/codebookvid1.mp4"
   title: string;
   description?: string;
 }
 
 export default function LessonVideo({ src, title, description }: Props) {
-  const [started, setStarted] = useState(false);
+  const videoRef                    = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying]       = useState(false);
+  const [muted,   setMuted]         = useState(false);
+  const [progress, setProgress]     = useState(0);
+  const [duration, setDuration]     = useState(0);
+  const [hovered,  setHovered]      = useState(false);
 
-  // Build a clean embed URL — all branding/UI stripped
-  const embedUrl = [
-    `https://www.youtube-nocookie.com/embed/${src}`,
-    "?autoplay=1",
-    "&rel=0",           // no related videos
-    "&modestbranding=1",// minimal branding
-    "&controls=1",      // keep native controls (scrubber, volume)
-    "&showinfo=0",      // no title bar
-    "&iv_load_policy=3",// no annotations
-    "&disablekb=0",     // keep keyboard shortcuts
-    "&color=white",     // white progress bar (less YouTube-branded)
-    "&playsinline=1",
-  ].join("");
+  const toggle = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) { v.play();  setPlaying(true);  }
+    else          { v.pause(); setPlaying(false); }
+  };
+
+  const onTimeUpdate = () => {
+    const v = videoRef.current;
+    if (!v || !v.duration) return;
+    setProgress((v.currentTime / v.duration) * 100);
+  };
+
+  const onLoaded = () => {
+    if (videoRef.current) setDuration(videoRef.current.duration);
+  };
+
+  const onEnded = () => setPlaying(false);
+
+  const seek = (e: React.MouseEvent<HTMLDivElement>) => {
+    const v = videoRef.current;
+    if (!v) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    v.currentTime = ((e.clientX - rect.left) / rect.width) * v.duration;
+  };
+
+  const toggleMute = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !muted;
+    setMuted(!muted);
+  };
+
+  const fullscreen = () => videoRef.current?.requestFullscreen?.();
+
+  const fmt = (s: number) => {
+    const m   = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, "0")}`;
+  };
 
   return (
     <div className="rounded-lg overflow-hidden border border-[#e4e4e7] bg-[#0d1117]">
 
-      {/* Video area */}
-      <div className="relative w-full" style={{ paddingBottom: "56.25%" /* 16:9 */ }}>
+      {/* Video */}
+      <div
+        className="relative cursor-pointer select-none"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onClick={toggle}
+      >
+        <video
+          ref={videoRef}
+          src={src}
+          className="w-full block"
+          style={{ maxHeight: 320, background: "#000" }}
+          onTimeUpdate={onTimeUpdate}
+          onLoadedMetadata={onLoaded}
+          onEnded={onEnded}
+          muted={muted}
+          playsInline
+        />
 
-        {/* Thumbnail / click-to-play screen shown before user starts */}
-        {!started && (
+        {/* Play / pause overlay */}
+        <div
+          className={cn(
+            "absolute inset-0 flex items-center justify-center transition-opacity duration-150",
+            (!playing || hovered) ? "opacity-100" : "opacity-0"
+          )}
+          style={{ background: "rgba(0,0,0,0.22)" }}
+        >
+          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
+            {playing
+              ? <Pause size={20} className="text-white" />
+              : <Play  size={20} className="text-white ml-0.5" />
+            }
+          </div>
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="px-3 py-2.5" style={{ background: "#161b22" }}>
+        {/* Progress bar */}
+        <div
+          className="h-1 rounded-full cursor-pointer mb-2.5 overflow-hidden"
+          style={{ background: "#30363d" }}
+          onClick={seek}
+        >
+          <div
+            className="h-full rounded-full transition-all duration-100"
+            style={{ width: `${progress}%`, background: "#4589ff" }}
+          />
+        </div>
+
+        {/* Bottom row */}
+        <div className="flex items-center gap-3">
           <button
-            onClick={() => setStarted(true)}
-            className="absolute inset-0 w-full h-full flex flex-col items-center justify-center bg-[#0d1117] group"
-            aria-label={`Play ${title}`}
+            onClick={toggle}
+            className="text-[#7d8590] hover:text-[#e6edf3] transition-colors"
           >
-            {/* Thumbnail image from YouTube */}
-            <img
-              src={`https://img.youtube.com/vi/${src}/hqdefault.jpg`}
-              alt={title}
-              className="absolute inset-0 w-full h-full object-cover opacity-60"
-            />
-            {/* Play button overlay */}
-            <div className="relative z-10 w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-              <Play size={22} className="text-white ml-1" />
-            </div>
+            {playing ? <Pause size={14} /> : <Play size={14} />}
           </button>
-        )}
 
-        {/* Iframe — only mounted after click so no autoplay on page load */}
-        {started && (
-          <>
-            <iframe
-              className="absolute inset-0 w-full h-full"
-              src={embedUrl}
-              title={title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+          <button
+            onClick={toggleMute}
+            className="text-[#7d8590] hover:text-[#e6edf3] transition-colors"
+          >
+            {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+          </button>
 
-            {/*
-              Overlay strip that covers the YouTube logo watermark
-              (bottom-right corner, ~60×18px).
-              Pointer-events are none so the iframe controls still work everywhere else.
-            */}
-            <div
-              className="absolute bottom-0 right-0 pointer-events-none"
-              style={{
-                width: 80,
-                height: 28,
-                background: "#0d1117",
-                borderTopLeftRadius: 4,
-              }}
-            />
-          </>
-        )}
+          <span className="text-[10px] font-mono text-[#484f58]">
+            {fmt((duration * progress) / 100)} / {fmt(duration)}
+          </span>
+
+          <div className="flex-1 min-w-0">
+            <span className="text-[11px] text-[#7d8590] truncate block">{title}</span>
+          </div>
+
+          <button
+            onClick={fullscreen}
+            className="text-[#7d8590] hover:text-[#e6edf3] transition-colors"
+          >
+            <Maximize2 size={13} />
+          </button>
+        </div>
       </div>
 
-      {/* Title + description bar */}
-      <div className="px-4 py-3 border-t border-[#21262d]" style={{ background: "#161b22" }}>
-        <p className="text-xs font-semibold text-[#e6edf3] truncate">{title}</p>
-        {description && (
-          <p className="text-[11px] text-[#7d8590] mt-0.5 leading-relaxed">{description}</p>
-        )}
-      </div>
+      {/* Description */}
+      {description && (
+        <div className="px-4 py-2.5 border-t border-[#21262d]" style={{ background: "#0d1117" }}>
+          <p className="text-xs text-[#7d8590] leading-relaxed">{description}</p>
+        </div>
+      )}
     </div>
   );
 }
